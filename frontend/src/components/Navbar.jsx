@@ -20,22 +20,14 @@ const Navbar = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                to="/">خانه</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                to="/about">درباره ما</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink
-                className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-                to="/comments">نظرات</NavLink>
-            </li>
+            <li className="nav-item"><NavLink className="nav-link" to="/">خانه</NavLink></li>
+            <li className="nav-item"><NavLink className="nav-link" to="/about">درباره ما</NavLink></li>
+            <li className="nav-item"><NavLink className="nav-link" to="/comments">نظرات</NavLink></li>
           </ul>
+          <div className="ms-auto">
+            <Link className="btn btn-outline-primary me-2" to="/login">ورود</Link>
+            <Link className="btn btn-primary" to="/signup">عضویت</Link>
+          </div>
         </div>
       </div>
     </nav>
