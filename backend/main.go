@@ -1,13 +1,17 @@
 package main
 
 import (
-    "log"
-    "net/http"
+	"log"
+	"net/http"
+	"time"
 
-    "github.com/gin-gonic/gin"
-    "gorm.io/driver/sqlite"
-    "gorm.io/gorm"
-    "gorm.io/gorm/logger"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+
+	// "gorm.io/gorm/logger"
+	"gorm.io/driver/sqlite"
+	_ "modernc.org/sqlite" // <-- CGO-free driver
 )
 
 // تعریف مدل کاربر
@@ -20,9 +24,17 @@ type User struct {
 
 func main() {
     // اتصال به پایگاه داده SQLite
-    db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{
-        Logger: logger.Default.LogMode(logger.Info),
-    })
+    // db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{
+    //     Logger: logger.Default.LogMode(logger.Info),
+    // })
+    // if err != nil {
+    //     log.Fatal("خطا در اتصال به پایگاه داده:", err)
+    // }
+
+    db, err := gorm.Open(sqlite.Dialector{
+        DriverName: "sqlite", // <- this is important
+        DSN:        "file:test.db",
+    }, &gorm.Config{})
     if err != nil {
         log.Fatal("خطا در اتصال به پایگاه داده:", err)
     }
@@ -34,6 +46,15 @@ func main() {
 
     // ایجاد سرور Gin
     router := gin.Default()
+
+    router.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"*"}, // اجازه از مبدا فرن‌ت‌اند
+        AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+        ExposeHeaders:    []string{"Content-Length"},
+        AllowCredentials: true,
+        MaxAge:           12 * time.Hour,
+    }))
 
     // مسیر ثبت‌نام (Signup)
     router.POST("/api/users/signup", func(c *gin.Context) {

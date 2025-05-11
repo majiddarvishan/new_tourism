@@ -29,3 +29,13 @@
 
 آیا می‌خواهید قابلیت دیگری مثل تایید ایمیل یا مدیریت حساب کاربری اضافه کنیم؟ 😊24
 
+
+🔹 5. Next Steps 🚀
+✅ اضافه کردن JWT برای امنیت بیشتر ✅ ذخیره رمز عبور با bcrypt در backend ✅ ایجاد داشبورد کاربران
+
+با این تغییرات، فرانت‌اند شما حالا از API backend استفاده می‌کند! اگر بخواهید قابلیت دیگری مانند مدیریت احراز هویت، تایید ایمیل یا فراموشی رمز عبور را اضافه کنیم، خوشحال می‌شوم کمک کنم. 😊
+
+4️⃣ Future Enhancements 🚀
+✅ Add JWT Authentication for secure login ✅ Store passwords securely using bcrypt ✅ Create a User Dashboard for logged-in users
+
+Now, the React frontend fully interacts with the Go backend API! If you’d like, I can guide you on implementing JWT authentication, password encryption, or handling user sessions with a database. Let me know how you'd like to improve this further! 😊2
