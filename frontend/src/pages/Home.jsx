@@ -5,6 +5,7 @@ import CityMenu from '../components/CityMenu';
 import Gallery from '../components/Gallery';
 
 const Home = () => {
+  // اگر CityMenu نیاز به state انتخاب شهر داشته باشد
   const [selectedCity, setSelectedCity] = useState("همه");
 
   return (
