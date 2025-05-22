@@ -1,0 +1,73 @@
+/* سبک کلی Navbar */
+.navbar {
+  direction: rtl;
+  background: linear-gradient(135deg, #007bff, #6610f2); /* گرادیان جذاب */
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* سایه قوی‌تر */
+  padding: 15px 20px;
+  transition: background 0.4s ease-in-out;
+}
+
+/* برند Navbar */
+.navbar-brand {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  transition: color 0.3s;
+}
+
+.navbar-brand:hover {
+  color: #ffdd57;
+}
+
+/* لینک‌های منو */
+.navbar-nav {
+  margin-right: auto;
+  text-align: right;
+}
+
+.nav-link {
+  font-size: 1.1rem;
+  color: white;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.nav-link:hover {
+  color: #ffdd57;
+  transform: scale(1.1); /* بزرگ شدن لینک‌ها هنگام هاور */
+}
+
+/* دکمه‌های ورود و عضویت */
+.btn-outline-primary {
+  border-color: #ffdd57;
+  color: #ffdd57;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #ffdd57;
+  color: #000;
+}
+
+.btn-primary {
+  background-color: #ffdd57;
+  color: #000;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #ffc107;
+}
+
+/* حالت ریسپانسیو (برای موبایل) */
+@media (max-width: 768px) {
+  .navbar-nav {
+    text-align: center;
+  }
+
+  .btn-outline-primary,
+  .btn-primary {
+    width: 100%;
+    margin-top: 10px;
+  }
+}

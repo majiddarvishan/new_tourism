@@ -1,25 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Link, NavLink } from "react-router-dom";
+import "../styles/Navbar.css";
 
 const Navbar = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
+    const storedUser = localStorage.getItem("user");
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg">
       <div className="container">
         <Link className="navbar-brand" to="/">سایت توریستی</Link>
-        <div className="collapse navbar-collapse">
-          <ul className="navbar-nav">
-            <li><NavLink className="nav-link" to="/">خانه</NavLink></li>
-            <li><NavLink className="nav-link" to="/about">درباره ما</NavLink></li>
-            <li><NavLink className="nav-link" to="/comments">نظرات</NavLink></li>
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        <div className="collapse navbar-collapse text-end" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item"><NavLink className="nav-link" to="/">خانه</NavLink></li>
+            <li className="nav-item"><NavLink className="nav-link" to="/about">درباره ما</NavLink></li>
+            <li className="nav-item"><NavLink className="nav-link" to="/comments">نظرات</NavLink></li>
           </ul>
-          <div className="ms-auto">
+          <div className="me-auto">
             {user ? (
               <span>خوش آمدید، {user.name}</span>
             ) : (
