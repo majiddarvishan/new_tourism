@@ -2,40 +2,67 @@ package main
 
 import (
 	"log"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
-	// "gorm.io/gorm/logger"
-	// "gorm.io/driver/sqlite"
-	// _ "modernc.org/sqlite" // <-- CGO-free driver
-
-    "tourism/database"
-    "tourism/routes"
+	"tourism/database"
+	"tourism/routes"
 )
 
-
 func main() {
-    db := database.ConnectDB()
+	db := database.ConnectDB()
 
-	// ایجاد سرور Gin
 	router := gin.Default()
 
+	// Get allowed origins from environment variable or use default
+	allowedOrigins := strings.Split(getEnv("ALLOWED_ORIGINS", "http://localhost:3000"), ",")
+
+	// Log allowed origins for debugging
+	log.Printf("Allowed CORS origins: %v", allowedOrigins)
+
+	// Apply CORS middleware first
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // اجازه از مبدا فرن‌ت‌اند
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowOrigins:     allowedOrigins,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Requested-With", "Access-Control-Request-Method", "Access-Control-Request-Headers"},
+		ExposeHeaders:    []string{"Content-Length", "Content-Type", "Authorization"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
 
-    routes.RegisterUserRoutes(router, db)
-    routes.RegisterCommentRoutes(router, db)
+	// Enhanced debug middleware
+	router.Use(func(c *gin.Context) {
+		origin := c.Request.Header.Get("Origin")
+		method := c.Request.Method
+		path := c.Request.URL.Path
 
-	// اجرای سرور روی پورت 5000
-	if err := router.Run(":5000"); err != nil {
-		log.Fatal("خطا در اجرای سرور:", err)
+		log.Printf("[DEBUG] Request: %s %s from %s", method, path, origin)
+		log.Printf("[DEBUG] Request Headers: %v", c.Request.Header)
+
+		// Log CORS headers in response
+		c.Next()
+
+		log.Printf("[DEBUG] Response Headers: %v", c.Writer.Header())
+		log.Printf("[DEBUG] CORS Headers: Access-Control-Allow-Origin: %s", c.Writer.Header().Get("Access-Control-Allow-Origin"))
+	})
+
+	routes.RegisterUserRoutes(router, db)
+	routes.RegisterCommentRoutes(router, db)
+
+	port := getEnv("PORT", "5000")
+	log.Printf("Server starting on port %s", port)
+	if err := router.Run(":" + port); err != nil {
+		log.Fatal("Server error:", err)
 	}
+}
+
+func getEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+	return fallback
 }

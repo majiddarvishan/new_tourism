@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import CommentModal from './CommentModal';
+// import CommentModal from './CommentModal';
+import PhotoComments from "./PhotoComments";
 
 const Gallery = ({ selectedCity }) => {
   // آرایه نمونه‌ی تصاویر پیشنهادی
@@ -53,102 +54,125 @@ const Gallery = ({ selectedCity }) => {
       ? locations.filter((item) => item.city === selectedCity)
       : locations;
 
-  // وضعیت مربوط به نمایش modal
-  const [showModal, setShowModal] = useState(false);
-  const [activePhotoId, setActivePhotoId] = useState(null);
-
-  // برای ذخیره‌ی نظرات هر عکس (به صورت اختیاری)
-  const [comments, setComments] = useState({}); // به صورت دیکشنری: key -> photoId, value -> array of comments
-
-  const openModal = (photoId) => {
-    setActivePhotoId(photoId);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-    setActivePhotoId(null);
-  };
-
-  const addComment = async (photoId, commentText) => {
-    // بررسی ورود کاربر (در محیط‌های واقعی، از توکن JWT استفاده کنید)
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
-      alert('لطفاً ابتدا وارد شوید.');
-      return;
-    }
-    const user = JSON.parse(storedUser);
-
-    try {
-      const response = await fetch('http://localhost:5000/api/comments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: user.id,      // مقدار user.id از session ذخیره‌شده
-          photo_id: photoId,
-          text: commentText,
-        }),
-      });
-      const data = await response.json();
-      if (response.status === 201) {
-        alert('نظر با موفقیت ثبت شد!');
-        // اضافه کردن نظر به وضعیت محلی (اختیاری)
-        setComments((prev) => {
-          const prevComments = prev[photoId] || [];
-          return { ...prev, [photoId]: [...prevComments, data.comment] };
-        });
-      } else {
-        alert(data.error || 'خطا در ثبت نظر');
-      }
-    } catch (error) {
-      console.error('Error submitting comment:', error);
-      alert('خطا در ثبت نظر');
-    }
-  };
-
-  return (
+return (
     <section className="container mt-5">
       <div className="row">
         {filteredLocations.map((item) => (
           <div key={item.id} className="col-md-4 mb-4">
             <img
               src={item.image}
-              alt={`مکان ${item.id}`}
+              alt={`عکس ${item.id}`}
               className="img-fluid rounded"
-              style={{ width: '100%', height: 'auto' }}
+              style={{ width: "100%", height: "auto" }}
             />
             <p className="mt-2">{item.description}</p>
-            <button
-              className="btn btn-sm btn-primary"
-              onClick={() => openModal(item.photoId)}
-            >
-              ثبت نظر
-            </button>
-            {/* نمایش نظرات ثبت شده برای هر عکس (اختیاری) */}
-            {comments[item.photoId] && comments[item.photoId].length > 0 && (
-              <ul className="mt-2 list-group">
-                {comments[item.photoId].map((com) => (
-                  <li key={com.id} className="list-group-item">
-                    <strong>User {com.user_id}:</strong> {com.text}
-                  </li>
-                ))}
-              </ul>
-            )}
+            {/* فراخوانی کامپوننت مربوط به کامنت‌های این عکس */}
+            <PhotoComments photoId={item.photoId} />
           </div>
         ))}
       </div>
-
-      {/* نمایش CommentModal فقط در صورت کلیک روی دکمه */}
-      {showModal && activePhotoId && (
-        <CommentModal
-          photoId={activePhotoId}
-          show={showModal}
-          handleClose={closeModal}
-          addComment={addComment}
-        />
-      )}
     </section>
   );
 };
 
 export default Gallery;
+
+  // وضعیت مربوط به نمایش modal
+//   const [showModal, setShowModal] = useState(false);
+//   const [activePhotoId, setActivePhotoId] = useState(null);
+
+//   // برای ذخیره‌ی نظرات هر عکس (به صورت اختیاری)
+//   const [comments, setComments] = useState({}); // به صورت دیکشنری: key -> photoId, value -> array of comments
+
+//   const openModal = (photoId) => {
+//     setActivePhotoId(photoId);
+//     setShowModal(true);
+//   };
+
+//   const closeModal = () => {
+//     setShowModal(false);
+//     setActivePhotoId(null);
+//   };
+
+//   const addComment = async (photoId, commentText) => {
+//     // بررسی ورود کاربر (در محیط‌های واقعی، از توکن JWT استفاده کنید)
+//     const storedUser = localStorage.getItem('user');
+//     if (!storedUser) {
+//       alert('لطفاً ابتدا وارد شوید.');
+//       return;
+//     }
+//     const user = JSON.parse(storedUser);
+
+//     try {
+//       const response = await fetch('http://localhost:5000/api/comments', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({
+//           user_id: user.id,      // مقدار user.id از session ذخیره‌شده
+//           photo_id: photoId,
+//           text: commentText,
+//         }),
+//       });
+//       const data = await response.json();
+//       if (response.status === 201) {
+//         alert('نظر با موفقیت ثبت شد!');
+//         // اضافه کردن نظر به وضعیت محلی (اختیاری)
+//         setComments((prev) => {
+//           const prevComments = prev[photoId] || [];
+//           return { ...prev, [photoId]: [...prevComments, data.comment] };
+//         });
+//       } else {
+//         alert(data.error || 'خطا در ثبت نظر');
+//       }
+//     } catch (error) {
+//       console.error('Error submitting comment:', error);
+//       alert('خطا در ثبت نظر');
+//     }
+//   };
+
+//   return (
+//     <section className="container mt-5">
+//       <div className="row">
+//         {filteredLocations.map((item) => (
+//           <div key={item.id} className="col-md-4 mb-4">
+//             <img
+//               src={item.image}
+//               alt={`مکان ${item.id}`}
+//               className="img-fluid rounded"
+//               style={{ width: '100%', height: 'auto' }}
+//             />
+//             <p className="mt-2">{item.description}</p>
+//             <button
+//               className="btn btn-sm btn-primary"
+//               onClick={() => openModal(item.photoId)}
+//             >
+//               ثبت نظر
+//             </button>
+//             {/* نمایش نظرات ثبت شده برای هر عکس (اختیاری) */}
+//             {comments[item.photoId] && comments[item.photoId].length > 0 && (
+//               <ul className="mt-2 list-group">
+//                 {comments[item.photoId].map((com) => (
+//                   <li key={com.id} className="list-group-item">
+//                     <strong>User {com.user_id}:</strong> {com.text}
+//                   </li>
+//                 ))}
+//               </ul>
+//             )}
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* نمایش CommentModal فقط در صورت کلیک روی دکمه */}
+//       {showModal && activePhotoId && (
+//         <CommentModal
+//           photoId={activePhotoId}
+//           show={showModal}
+//           handleClose={closeModal}
+//           addComment={addComment}
+//         />
+//       )}
+//     </section>
+//   );
+// };
+
+// export default Gallery;

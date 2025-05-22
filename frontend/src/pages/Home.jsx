@@ -1,11 +1,9 @@
-// src/pages/Home.jsx
-import React, { useState } from 'react';
-import Header from '../components/Header';
-import CityMenu from '../components/CityMenu';
-import Gallery from '../components/Gallery';
+import React, { useState } from "react";
+import Header from "../components/Header";
+import CityMenu from "../components/CityMenu";
+import Gallery from "../components/Gallery";
 
 const Home = () => {
-  // اگر CityMenu نیاز به state انتخاب شهر داشته باشد
   const [selectedCity, setSelectedCity] = useState("همه");
 
   return (
